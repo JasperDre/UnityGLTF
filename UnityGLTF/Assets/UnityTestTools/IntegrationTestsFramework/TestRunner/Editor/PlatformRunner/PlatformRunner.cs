@@ -90,7 +90,11 @@ namespace UnityTest.IntegrationTests
 
 			AssetDatabase.Refresh();
 
-			if (!string.IsNullOrEmpty(result))
+#if UNITY_2017_4_OR_NEWER
+			if(!string.IsNullOrEmpty(result))
+#else
+			if(result.summary.result == UnityEditor.Build.Reporting.BuildResult.Failed)
+#endif
 			{
 				if (InternalEditorUtility.inBatchMode)
 					EditorApplication.Exit(Batch.returnCodeRunError);
@@ -115,8 +119,10 @@ namespace UnityTest.IntegrationTests
 					{
 						case RuntimePlatform.WindowsPlayer:
 							return BuildTarget.StandaloneWindows;
+#if UNITY_2017_4_OR_NEWER
 						case RuntimePlatform.OSXPlayer:
 							return BuildTarget.StandaloneOSXIntel;
+#endif
 						case RuntimePlatform.LinuxPlayer:
 							return BuildTarget.StandaloneLinux;
 					}
